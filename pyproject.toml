@@ -13,6 +13,7 @@ dependencies = [
     "livekit-plugins-noise-cancellation~=0.2",
     "livekit-plugins-google>=1.1.6",
     "python-dotenv",
+    "langfuse>=3.2.6",
 ]
 
 [dependency-groups]

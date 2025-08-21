@@ -2,6 +2,7 @@ import base64
 import json
 import logging
 import os
+from langfuse_setup import setup_langfuse
 
 from dotenv import load_dotenv
 from livekit.agents import (
@@ -95,8 +96,7 @@ def prewarm(proc: JobProcess):
 
 
 async def entrypoint(ctx: JobContext):
-    # Logging setup
-    # Add any other context you want in all log entries here
+    setup_langfuse()
     ctx.log_context_fields = {
         "room": ctx.room.name,
     }
