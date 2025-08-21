@@ -36,6 +36,45 @@ Set up the environment by copying `.env.example` to `.env.local` and filling in 
 - `DEEPGRAM_API_KEY`: [Get a key](https://console.deepgram.com/) or use your [preferred STT provider](https://docs.livekit.io/agents/integrations/stt/)
 - `CARTESIA_API_KEY`: [Get a key](https://play.cartesia.ai/keys) or use your [preferred TTS provider](https://docs.livekit.io/agents/integrations/tts/)
 
+### Google Cloud TTS Setup (Optional)
+
+If you want to use Google Cloud Text-to-Speech instead of Cartesia, you'll need to set up Google Cloud credentials:
+
+1. Create a service account in your [Google Cloud Console](https://console.cloud.google.com/)
+2. Enable the Text-to-Speech API for your project
+3. Grant the service account the necessary IAM roles:
+   - Go to **IAM & Admin > IAM** in the Google Cloud Console
+   - Find your service account and click the edit (pencil) icon
+   - Add the following role: **Cloud Text-to-Speech API User** (`roles/texttospeech.user`)
+   - Alternatively, you can use the more permissive **Editor** role, but the specific TTS role is recommended for security
+4. Download the service account JSON credentials file
+5. Convert the credentials to base64 format and add to your `.env.local`:
+
+```bash
+# Convert your Google Cloud credentials JSON to base64
+python3 -c "
+import json
+import base64
+
+# Read your downloaded credentials file
+with open('path/to/your/credentials.json', 'r') as f:
+    creds = json.load(f)
+
+# Convert to base64
+creds_json = json.dumps(creds)
+creds_b64 = base64.b64encode(creds_json.encode()).decode()
+print('Add this line to your .env.local:')
+print(f'GOOGLE_APPLICATION_CREDENTIALS_B64={creds_b64}')
+"
+```
+
+Then add the base64-encoded credentials to your `.env.local`:
+```bash
+GOOGLE_APPLICATION_CREDENTIALS_B64=your_base64_encoded_credentials_here
+```
+
+**Note**: The base64 encoding method is recommended over raw JSON in environment variables because it avoids issues with special characters and line breaks in the private key.
+
 You can load the LiveKit environment automatically using the [LiveKit CLI](https://docs.livekit.io/home/cli/cli-setup):
 
 ```bash
