@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 
 from dotenv import load_dotenv
 from livekit.agents import (
@@ -16,7 +18,7 @@ from livekit.agents import (
     metrics,
 )
 from livekit.agents.llm import function_tool
-from livekit.plugins import cartesia, deepgram, noise_cancellation, openai, silero
+from livekit.plugins import cartesia, deepgram, google, noise_cancellation, openai, silero
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 logger = logging.getLogger("agent")
@@ -71,7 +73,11 @@ async def entrypoint(ctx: JobContext):
         stt=deepgram.STT(model="nova-3", language="multi"),
         # Text-to-speech (TTS) is your agent's voice, turning the LLM's text into speech that the user can hear
         # See all providers at https://docs.livekit.io/agents/integrations/tts/
-        tts=cartesia.TTS(voice="6f84f4b8-58a2-430c-8c79-688dad597532"),
+        tts=google.TTS(
+            language="es-US",
+            voice_name="es-US-Chirp3-HD-Puck",
+            credentials_info=json.loads(os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")) if os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") else None,
+        ),
         # VAD and turn detection are used to determine when the user is speaking and when the agent should respond
         # See more at https://docs.livekit.io/agents/build/turns
         turn_detection=MultilingualModel(),
